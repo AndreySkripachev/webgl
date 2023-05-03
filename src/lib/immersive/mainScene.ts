@@ -1,7 +1,18 @@
-import { Color3, Engine, MeshBuilder, Scene, StandardMaterial } from '@babylonjs/core';
+import {
+  Color3,
+  Engine,
+  MeshBuilder,
+  Scene,
+  StandardMaterial,
+  Vector3,
+} from '@babylonjs/core';
+import { CannonJSPlugin } from '@babylonjs/core/Physics/Plugins/cannonJSPlugin';
+import * as CANNON from 'cannon-es';
 
 import { MainCamera } from './mainCamera';
 import { MainLight } from './mainLight';
+
+window.CANNON = CANNON;
 
 /** Main scene of the app. */
 export class MainScene {
@@ -17,6 +28,7 @@ export class MainScene {
     this.scene = new Scene(this.engine);
 
     this.engine.runRenderLoop(() => this.scene.render());
+    this.scene.enablePhysics(new Vector3(0, -9.81, 0), new CannonJSPlugin(true));
 
     MainCamera.create(this.scene);
     MainLight.create(this.scene);
