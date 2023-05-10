@@ -1,5 +1,4 @@
 import {
-  Color3,
   CubeTexture,
   Engine,
   MeshBuilder,
@@ -8,8 +7,11 @@ import {
   Vector3,
   AbstractMesh,
   PhysicsImpostor,
+  SceneLoader,
+  CannonJSPlugin,
 } from '@babylonjs/core';
-import { CannonJSPlugin } from '@babylonjs/core/Physics/Plugins/cannonJSPlugin';
+
+import '@babylonjs/loaders/glTF';
 import * as CANNON from 'cannon-es';
 
 import { loadTexture } from 'src/core/utils/loadTexture';
@@ -50,6 +52,8 @@ export class MainScene {
     MainCamera.create(this.scene);
     MainLight.create(this.scene);
 
+    // this.scene.forceShowBoundingBoxes = true;
+
     this.objects = {
       deletionTrigger: MeshBuilder.CreateBox(
         'deletionTrigger',
@@ -61,7 +65,7 @@ export class MainScene {
         'ground',
         {
           width: GROUND_SIZE,
-          height: GROUND_SIZE
+          height: GROUND_SIZE,
         }
       ),
     }
@@ -69,6 +73,7 @@ export class MainScene {
     this.createGround();
     this.createEnv();
     this.initDeletionTrigger();
+    this.initCar();
   }
 
   private createEnv(): void {
@@ -96,8 +101,11 @@ export class MainScene {
       PhysicsImpostor.BoxImpostor,
       {
         mass: 0,
+
       },
     );
+
+    groundFront.position.y -= 15;
 
     const groundBack = MeshBuilder.CreateGround('groundBack', { width: GROUND_SIZE, height: GROUND_SIZE });
     const materialBack = new StandardMaterial('groundMaterialBack', this.scene);
@@ -116,5 +124,10 @@ export class MainScene {
   private initDeletionTrigger(): void {
     const { deletionTrigger } = this.objects;
     deletionTrigger.visibility = 0;
+  }
+
+  private async initCar(): Promise<void> {
+    const { meshes: [car] } = await SceneLoader.ImportMeshAsync('car', '/models/car/', 'car.glb', this.scene);
+    const { meshes: [wheel] } = await SceneLoader.ImportMeshAsync('wheel', '/models/wheel/', 'wheel.glb');
   }
 }
