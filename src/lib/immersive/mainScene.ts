@@ -103,8 +103,6 @@ export class MainScene {
       },
     );
 
-    groundFront.position.y -= 15;
-
     const groundBack = MeshBuilder.CreateGround('groundBack', { width: GROUND_SIZE, height: GROUND_SIZE });
     const materialBack = new StandardMaterial('groundMaterialBack', this.scene);
     const textArrayBack = loadTexture(materialBack, 'ground_back');
@@ -125,7 +123,41 @@ export class MainScene {
   }
 
   private async initCar(): Promise<void> {
-    const { meshes: [car] } = await SceneLoader.ImportMeshAsync('car', '/models/car/', 'car.glb', this.scene);
+    const { meshes: [_car] } = await SceneLoader.ImportMeshAsync('car', '/models/car/', 'car.glb', this.scene);
     const { meshes: [wheel] } = await SceneLoader.ImportMeshAsync('wheel', '/models/wheel/', 'wheel.glb');
+
+    const CAR_SIZE: Readonly<Record<'x' | 'z', number>> = {
+      x: 2,
+      z: 1,
+    };
+
+    const WHEEL_SIZE: Readonly<Record<'x' | 'z', number>> = {
+      x: 1,
+      z: 0.5,
+    };
+
+    const WHEEL_POSITION_Z = CAR_SIZE.z + WHEEL_SIZE.z;
+    const WHEEL_POSITION_X = CAR_SIZE.x * 0.6;
+
+    const wheelFL = wheel.clone('wheelFL', null) as AbstractMesh;
+    const wheelFR = wheel.clone('wheelFR', null) as AbstractMesh;
+    const wheelBL = wheel.clone('wheelBL', null) as AbstractMesh;
+    const wheelBR = wheel.clone('wheelBR', null) as AbstractMesh;
+
+    wheelFL.position.z = WHEEL_POSITION_Z;
+    wheelFL.position.x = WHEEL_POSITION_X;
+
+    wheelFR.position.z = -WHEEL_POSITION_Z;
+    wheelFR.position.x = WHEEL_POSITION_X;
+    wheelFR.rotate(new Vector3(0, 1, 0), Math.PI);
+
+    wheelBL.position.z = WHEEL_POSITION_Z;
+    wheelBL.position.x = -WHEEL_POSITION_X;
+
+    wheelBR.position.z = -WHEEL_POSITION_Z;
+    wheelBR.position.x = -WHEEL_POSITION_X;
+    wheelBR.rotate(new Vector3(0, 1, 0), Math.PI);
+
+    this.scene.removeMesh(wheel, true);
   }
 }
