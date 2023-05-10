@@ -52,8 +52,6 @@ export class MainScene {
     MainCamera.create(this.scene);
     MainLight.create(this.scene);
 
-    // this.scene.forceShowBoundingBoxes = true;
-
     this.objects = {
       deletionTrigger: MeshBuilder.CreateBox(
         'deletionTrigger',
