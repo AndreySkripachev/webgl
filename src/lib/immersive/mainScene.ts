@@ -96,10 +96,9 @@ export class MainScene {
 
     groundFront.physicsImpostor = new PhysicsImpostor(
       groundFront,
-      PhysicsImpostor.BoxImpostor,
+      PhysicsImpostor.PlaneImpostor,
       {
         mass: 0,
-
       },
     );
 
@@ -115,6 +114,8 @@ export class MainScene {
     }
 
     groundFront.addChild(groundBack);
+
+    groundFront.position.y -= 5;
   }
 
   private initDeletionTrigger(): void {
@@ -123,12 +124,12 @@ export class MainScene {
   }
 
   private async initCar(): Promise<void> {
-    const { meshes: [_car] } = await SceneLoader.ImportMeshAsync('car', '/models/car/', 'car.glb', this.scene);
+    const { meshes: [car] } = await SceneLoader.ImportMeshAsync('car', '/models/car/', 'car.glb', this.scene);
     const { meshes: [wheel] } = await SceneLoader.ImportMeshAsync('wheel', '/models/wheel/', 'wheel.glb');
 
     const CAR_SIZE: Readonly<Record<'x' | 'z', number>> = {
-      x: 2,
-      z: 1,
+      x: 2.5,
+      z: 1.5,
     };
 
     const WHEEL_SIZE: Readonly<Record<'x' | 'z', number>> = {
@@ -138,6 +139,8 @@ export class MainScene {
 
     const WHEEL_POSITION_Z = CAR_SIZE.z + WHEEL_SIZE.z;
     const WHEEL_POSITION_X = CAR_SIZE.x * 0.6;
+    const CAR_MASS = 500;
+    const WHEEL_MASS = 50;
 
     const wheelFL = wheel.clone('wheelFL', null) as AbstractMesh;
     const wheelFR = wheel.clone('wheelFR', null) as AbstractMesh;
@@ -159,5 +162,24 @@ export class MainScene {
     wheelBR.rotate(new Vector3(0, 1, 0), Math.PI);
 
     this.scene.removeMesh(wheel, true);
+
+    const createWheelPhysicsImpostor = (mesh: AbstractMesh) =>
+      new PhysicsImpostor(
+        mesh,
+        PhysicsImpostor.CylinderImpostor,
+        { mass: WHEEL_MASS },
+      );
+
+
+    car.physicsImpostor = new PhysicsImpostor(
+      car,
+      PhysicsImpostor.BoxImpostor,
+      { mass: CAR_MASS },
+    );
+
+    wheelBL.physicsImpostor = createWheelPhysicsImpostor(wheelBL);
+    wheelBR.physicsImpostor = createWheelPhysicsImpostor(wheelBR);
+    wheelFL.physicsImpostor = createWheelPhysicsImpostor(wheelFL);
+    wheelFR.physicsImpostor = createWheelPhysicsImpostor(wheelFR);
   }
 }
