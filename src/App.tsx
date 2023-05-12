@@ -3,6 +3,7 @@ import { FC, useEffect, useRef } from 'react';
 import styles from './App.module.css';
 
 import { MainScene } from './lib/immersive/mainScene';
+import { MainMenuPage } from './features/mainMenu/MainMenuPage';
 
 /**
  * App component containing canvas with babylonjs scene.
@@ -22,10 +23,11 @@ export const App: FC = () => {
 
   return (
     <div className={styles.root}>
-      <canvas
+      <MainMenuPage/>
+      {/* <canvas
         className={styles.scene}
         ref={canvasRef}
-      />
+      /> */}
     </div>
   );
 };
