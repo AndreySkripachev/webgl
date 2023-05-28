@@ -5,6 +5,7 @@ import styles from './App.module.css';
 import { MainScene } from './lib/immersive/mainScene';
 import { MainMenu } from './features/mainMenu/MainMenu';
 import { GameStateContext, initialGameState } from './components/GameStateContext';
+import { ExitGameButton } from './components/ExitGameButton/ExitGameButton';
 
 /**
  * App component containing canvas with babylonjs scene.
@@ -47,7 +48,7 @@ export const App: FC = () => {
   return (
     <GameStateContext.Provider value={gameState}>
       <div className={styles.root}>
-        <MainMenu />
+        { inGame ? <ExitGameButton /> : <MainMenu />}
         <canvas
           className={styles.scene}
           ref={canvasRef}
