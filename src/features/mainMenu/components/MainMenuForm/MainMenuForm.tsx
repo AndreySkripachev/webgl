@@ -1,4 +1,6 @@
-import { FC, memo, useState, useEffect } from 'react';
+import { FC, memo, useState, useEffect, ChangeEvent, useContext, useCallback } from 'react';
+
+import { GameGeometry, GameStateContext } from 'src/components/GameStateContext';
 
 import { RangeInput } from '../RangeInput';
 
@@ -6,23 +8,38 @@ const MAX_OBJECT_COUNT = 5;
 const MIN_OBJECT_COUNT = 0;
 
 const MainMenuFormComponent: FC = () => {
-  const [balls, setBalls] = useState(MIN_OBJECT_COUNT);
-  const [squares, setSquares] = useState(MIN_OBJECT_COUNT);
+
+  const { geometries, setGeometries, setInGame } = useContext(GameStateContext);
 
   const [isEmpty, setIsEmpty] = useState(false);
 
+  const handleSubmit = () => {
+    if (!isEmpty) {
+      setInGame(true);
+    }
+  };
+
+  const updateGeometry = useCallback((geometry: GameGeometry) =>
+    (count: number) => {
+      setGeometries({
+        ...geometries,
+        [geometry]: count,
+      });
+    }
+  , []);
+
   useEffect(() => {
-    setIsEmpty([balls, squares].every(e => e === 0));
-  },[balls, squares]);
+    setIsEmpty([geometries.sphere, geometries.square].every(e => e === 0));
+  }, [geometries]);
 
   return (
-    <form>
+    <form onSubmit={handleSubmit}>
       <div>
-        Balls:
+        Spheres:
         <RangeInput
           max={MAX_OBJECT_COUNT}
           min={MIN_OBJECT_COUNT}
-          onChange={setBalls}
+          onChange={updateGeometry('sphere')}
         />
       </div>
       <div>
@@ -30,12 +47,15 @@ const MainMenuFormComponent: FC = () => {
         <RangeInput
           max={MAX_OBJECT_COUNT}
           min={MIN_OBJECT_COUNT}
-          onChange={setSquares}
+          onChange={updateGeometry('square')}
         />
       </div>
-      {[balls, squares].every(e => e === 0) && <div>Please choose </div>}
+      {isEmpty && <div>Please select at least one item of at least one type</div>}
+      <button
+        disabled={isEmpty}
+      >Play!</button>
     </form>
   )
-}
+};
 
 export const MainMenuForm = memo(MainMenuFormComponent);
