@@ -14,7 +14,12 @@ interface GameState {
   readonly inGame: boolean;
 }
 
-export type GameContext = GameState & Setters<GameState>;
+export type GameContext =
+  GameState &
+  Setters<GameState> &
+  {
+    setGeometries(v: Partial<typeof initialGameState['geometries']>): void;
+  };
 
 export const initialGameState: GameContext = {
   geometries: {

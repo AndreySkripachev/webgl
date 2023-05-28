@@ -4,9 +4,11 @@ import { MainMenuForm } from './components/MainMenuForm';
 import style from './style.module.css';
 
 const MainMenuComponent: FC = () => (
-  <div className={style.mainMenu}>
-    <h1>%GAME_NAME%</h1>
-    <MainMenuForm />
+  <div className={style.mainMenuPage}>
+    <div className={style.mainMenu}>
+      <h1 className={style.mainMenuHeader}>%GAME_NAME%</h1>
+      <MainMenuForm />
+    </div>
   </div>
 );
 

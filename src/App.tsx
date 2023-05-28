@@ -1,4 +1,4 @@
-import { FC, useContext, useEffect, useRef, useState } from 'react';
+import { FC, useEffect, useRef, useState } from 'react';
 
 import styles from './App.module.css';
 
@@ -15,13 +15,25 @@ export const App: FC = () => {
   const scene = useRef<MainScene | null>(null);
 
   const [inGame, setInGame] = useState(initialGameState.inGame);
-  const [geometries, setGeometries] = useState(initialGameState.geometries);
+
+  const [square, setSquare] = useState(initialGameState.geometries.square);
+  const [sphere, setSphere] = useState(initialGameState.geometries.sphere);
 
   const gameState: typeof initialGameState = {
-    geometries,
+    geometries: { sphere, square },
     inGame,
-    setGeometries,
-    setInGame,
+    setGeometries({ sphere: spCount, square: sqCount }: Partial<typeof initialGameState['geometries']> ) {
+      if (typeof sqCount === 'number') {
+        setSquare(sqCount);
+      }
+
+      if (typeof spCount === 'number') {
+        setSphere(spCount);
+      }
+    },
+    setInGame(val) {
+      setInGame(val);
+    },
   };
 
   useEffect(() => {
@@ -32,18 +44,14 @@ export const App: FC = () => {
     return () => scene.current?.erase();
   }, []);
 
-  useEffect(() => {
-    
-  }, [inGame]);
-
   return (
     <GameStateContext.Provider value={gameState}>
       <div className={styles.root}>
         <MainMenu />
-        {/* <canvas
+        <canvas
           className={styles.scene}
           ref={canvasRef}
-        /> */}
+        />
       </div>
     </GameStateContext.Provider>
   );

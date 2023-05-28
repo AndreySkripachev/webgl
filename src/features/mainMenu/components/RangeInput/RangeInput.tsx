@@ -11,23 +11,19 @@ interface Props {
   readonly max: number;
 
   /** Initial input value. */
-  readonly initialValue?: number;
+  readonly value: number;
+
+  /** On change. */
+  readonly onChange: (n: number) => void;
 
   /** Step. */
   readonly step?: number;
-
-  /** The event occurs when the value of. */
-  readonly onChange: (value: number) => void;
 }
 
-const RangeInputComponent: FC<Props> = ({ max, min, onChange, initialValue = min, step = 1 }) => {
-
-  const [value, setValue] = useState(initialValue)
+const RangeInputComponent: FC<Props> = ({ max, min, onChange, value, step = 1 }) => {
 
   const hangeChange = (e: ChangeEvent<HTMLInputElement>) => {
     const newValue = Number(e.target.value);
-
-    setValue(newValue);
     onChange(newValue);
   }
 
