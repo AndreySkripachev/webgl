@@ -1,4 +1,4 @@
-import { Scene, UniversalCamera, Vector3 } from '@babylonjs/core';
+import { Scene, Vector3, ArcRotateCamera } from '@babylonjs/core';
 
 /** Main camera of the scene. */
 export class MainCamera {
@@ -8,7 +8,7 @@ export class MainCamera {
    * @param scene Main scene.
    */
   public static create(scene: Scene): void {
-    const camera = new UniversalCamera('mainCamera', new Vector3(0, 1, 0), scene);
+    const camera = new ArcRotateCamera('mainCamera', 1, 1, 250, new Vector3(0, 1, 0), scene);
     camera.attachControl();
   }
 }
